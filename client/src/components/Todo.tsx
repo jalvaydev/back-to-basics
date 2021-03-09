@@ -1,4 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
+import { TodoType } from "../types";
 
 const DELETE_TODO = gql`
   mutation DeleteTodo($id: Float!) {
@@ -10,13 +11,15 @@ const DELETE_TODO = gql`
   }
 `;
 
-const Todo = ({ title, body, id }) => {
+const Todo = ({ title, body, id }: TodoType) => {
   const [deleteTodo] = useMutation(DELETE_TODO, {
     update: (cache) => {
       cache.modify({
         fields: {
           todos(todos = [], { readField }) {
-            return todos.filter((todoRef) => id !== readField("id", todoRef));
+            return todos.filter(
+              (todoRef: any) => id !== readField("id", todoRef)
+            );
           },
         },
       });
