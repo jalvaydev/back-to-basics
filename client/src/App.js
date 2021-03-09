@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation, readField } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { Formik, Form, Field } from "formik";
 
 const TODOS = gql`
@@ -30,12 +30,11 @@ const DELETE_TODO = gql`
 `;
 
 const TodoInput = () => {
-  const [addTodo, { data }] = useMutation(ADD_TODO, {
+  const [addTodo] = useMutation(ADD_TODO, {
     update: (cache) => {
       cache.modify({
         fields: {
-          todos(existingTodos = [], { readField }) {
-            console.log(addTodo);
+          todos(existingTodos = []) {
             const newTodo = cache.writeQuery({
               data: addTodo,
               query: TODOS,
@@ -48,7 +47,7 @@ const TodoInput = () => {
   });
 
   return (
-    <div className="w-3/12">
+    <div className="flex justify-center">
       <Formik
         initialValues={{ title: "", body: "" }}
         onSubmit={async (values, { setSubmitting }) => {
@@ -93,7 +92,7 @@ const TodoInput = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="my-3 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Add Todo
             </button>
@@ -106,18 +105,16 @@ const TodoInput = () => {
 
 const Header = () => {
   return (
-    <div className="md:flex py-10 md:items-center md:justify-between">
-      <div className="flex-1 min-w-0">
-        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-          Todo List
-        </h2>
-      </div>
+    <div className="flex py-10 justify-center">
+      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+        Todo List
+      </h2>
     </div>
   );
 };
 
 const Todo = ({ title, body, id }) => {
-  const [deleteTodo, { data }] = useMutation(DELETE_TODO, {
+  const [deleteTodo] = useMutation(DELETE_TODO, {
     update: (cache) => {
       cache.modify({
         fields: {
@@ -133,9 +130,9 @@ const Todo = ({ title, body, id }) => {
     <li className="col-span-1 flex shadow-sm rounded-md">
       <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
         <div className="flex-1 px-4 py-2 text-sm truncate">
-          <a href="#" className="text-gray-900 font-medium hover:text-gray-600">
+          <p className="text-gray-900 font-medium hover:text-gray-600">
             {title}
-          </a>
+          </p>
           <p className="text-gray-500">{body}</p>
         </div>
         <div className="flex-shrink-0 pr-2">
@@ -188,7 +185,7 @@ const TodoList = () => {
   );
 };
 
-export default function Home() {
+export default function App() {
   return (
     <div>
       <main>
